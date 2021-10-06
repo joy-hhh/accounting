@@ -1,3 +1,4 @@
+options(scipen = 999)
 library(tidyverse)
 library(writexl)
 
@@ -6,6 +7,10 @@ pop <- je %>%
     filter(ACCTCD  == '40401')
 
 pop <- pop %>% rename(amount = CR)
+
+PM <- 300000000
+EA <- PM * 0.05
+
 
 interval <- 300000000
 nu <- pop %>% 
@@ -24,6 +29,7 @@ pop <- pop %>%
 for (i in seq_along(sampling_n)) {
     sampling_row[i] <- which(pop$cum > sampling_n[i])[1]
 }
+sampling_row <- sampling_row %>% unique()
 
 length(na.omit(sampling_row))
 

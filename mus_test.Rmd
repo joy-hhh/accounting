@@ -1,0 +1,59 @@
+---
+title: "표본추출 절차서(MUS - Monetary Unit Selection)"
+author: "Joy"
+date: '2021 10 6 '
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data load
+     
+표본추출에 적용할 데이터를 Import.
+
+```{r}
+options(scipen = 999)
+library(tidyverse)
+library(writexl)
+
+je <- read_csv("https://raw.githubusercontent.com/joy-hhh/R_for_JE_test/main/je_utf.csv")
+pop <- je %>% 
+    filter(ACCTCD  == '40401')
+
+```
+     
+금액비례확률표본추출에 사용할 열이름(변수명) 변경. 
+     
+```{r}
+pop <- pop %>% rename(amount = CR)
+
+```
+     
+감사 계획(Audit Planning)에서 설정한 중요성금액을 입력한다.    
+     
+```{r}
+
+# 중요성 금액 입력
+PM <- 300000000
+
+# 허용왜곡표시
+EA <- PM * 0.05
+
+
+```
+     
+
+     
+     
+     
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
