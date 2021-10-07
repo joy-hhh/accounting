@@ -1,5 +1,5 @@
 ---
-title: "표본추출 절차서(MUS - Monetary Unit Selection)"
+title: "표본추출 절차서 (Audit Sampling)"
 author: "Joy"
 date: '2021 10 6 '
 output: word_document
@@ -8,10 +8,31 @@ output: word_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+     
+# 계정과목과 Test 목적
+     
+     
+매출, 매출의 발생사실 확인
+매출, 매출의 기간귀속 확인
+매출채권, 매출채권의 실재성 확인
+투자자산, 당기손익-공정가치측정 금융자산 취득의 발생사실 확인
 
+유형자산, 유형자산 취득의 발생사실 확인
+유형자산, 유형자산 권리와 의무 확인
+     
+     
 ## Data load
      
 표본추출에 적용할 데이터를 Import.
+     
+
+```{r include=FALSE}
+library(tidyverse)
+je <- read_csv("https://raw.githubusercontent.com/joy-hhh/R_for_JE_test/main/je_utf.csv")
+sales <- filter(je, ACCTCD == 40401)
+```
+
+
 
 ```{r}
 options(scipen = 999)
@@ -44,16 +65,3 @@ EA <- PM * 0.05
 
 ```
      
-
-     
-     
-     
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
