@@ -4,28 +4,42 @@ author: "Joy"
 date: '2021 10 6 '
 output: word_document
 ---
-
+     
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
      
-# 계정과목과 Test 목적
      
+# 계정과목과 Test 목적 및 오류의 정의
      
-매출, 매출의 발생사실 확인
-매출, 매출의 기간귀속 확인
-매출채권, 매출채권의 실재성 확인
-투자자산, 당기손익-공정가치측정 금융자산 취득의 발생사실 확인
+Determining the Objective and Defining an Error
+     
+(ex)  
+매출, 매출의 발생사실 확인  
+매출, 매출의 기간귀속 확인  
+매출채권, 매출채권의 실재성 확인  
+투자자산, 당기손익-공정가치측정 금융자산 취득의 발생사실 확인  
+유형자산, 유형자산 취득의 발생사실 확인  
+유형자산, 유형자산 권리와 의무 확인  
 
-유형자산, 유형자산 취득의 발생사실 확인
-유형자산, 유형자산 권리와 의무 확인
+
+
+
+Defining the Population and Stratification
+
+
+Defining the Sampling Unit
+
+
+
+
      
      
 ## Data load
      
 표본추출에 적용할 데이터를 Import.
      
-
+     
 ```{r include=FALSE}
 library(tidyverse)
 je <- read_csv("https://raw.githubusercontent.com/joy-hhh/R_for_JE_test/main/je_utf.csv")
