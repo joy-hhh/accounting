@@ -25,6 +25,7 @@ assurance_factor_raw <- tibble::tribble(
     )
 print(assurance_factor_raw)
 
+
 assurance_factor <- assurance_factor_raw %>% 
     pivot_longer(
     cols = c(High, Moderate, Low, Analytical.Procedures.Not.Performed),
@@ -41,6 +42,7 @@ assurance_factor <- assurance_factor %>%
 AF <- assurance_factor[[1,4]]
 print(AF)
 
+if (AF == 0) {print("Assurance Factor가 0입니다.")}
 
 ## Load Population Data
 
@@ -53,7 +55,7 @@ pop_amount <- pop$amount %>% sum()
 
 
 ## High Value
-sum_High_value_items <- 0
+sum_High_value_items <- pop$
     
 ## Sampling Interval = (Tolerable Misstatement – Expected Misstatement) / Assurance Factor
 sampling_interval = (PM - EA) / AF
