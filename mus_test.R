@@ -14,11 +14,59 @@ PM <- 740000000 * 0.8   ## Tolerable misstatement (generally performance materia
 EA <- PM * 0.05    ## Expected misstatement
 
 
+<<<<<<< HEAD
 ## Load Population Data
 
 # je <- read_csv("https://raw.githubusercontent.com/joy-hhh/R_for_JE_test/main/je_utf.csv")
 # pop <- je %>% 
 #     filter(ACCTCD  == '40401')
+=======
+## Assurance Factor 산정
+
+assurance_factor_raw <- tibble::tribble(
+    ~Significant.Risk, ~Reliance.on.Controls, ~High, ~Moderate, ~Low, ~Analytical.Procedures.Not.Performed,
+                "Yes",                  "No",   1.1,       1.6,  2.8,                                    3,
+                 "No",                  "No",     0,       0.5,  1.7,                                  1.9,
+                "Yes",                 "Yes",     0,       0.2,  1.4,                                  1.6,
+                 "No",                 "Yes",     0,         0,  0.3,                                  0.5
+    )
+print(assurance_factor_raw)
+
+
+assurance_factor <- assurance_factor_raw %>% 
+    pivot_longer(
+    cols = c(High, Moderate, Low, Analytical.Procedures.Not.Performed),
+    names_to = "Planned_Level",  # Planned Level of Assurance from Substantive Analytical Procedures
+    values_to = "Assurance_Factor"
+    )
+
+assurance_factor <- assurance_factor %>%
+    filter(
+        Significant.Risk == SR,
+        Reliance.on.Controls == RC,
+        Planned_Level == PL
+    )
+AF <- assurance_factor[[1,4]]
+print(AF)
+
+if (AF == 0) {print("Assurance Factor가 0입니다.")}
+
+## Load Population Data
+
+je <- read_csv("https://raw.githubusercontent.com/joy-hhh/R_for_JE_test/main/je_utf.csv")
+pop <- je %>% 
+    filter(ACCTCD  == '40401')
+
+pop <- pop %>% rename(amount = CR)
+pop_amount <- pop$amount %>% sum()
+
+
+## High Value
+sum_High_value_items <- pop$
+    
+## Sampling Interval = (Tolerable Misstatement – Expected Misstatement) / Assurance Factor
+sampling_interval = (PM - EA) / AF
+>>>>>>> a33e1d9931280b2ba221309140342ba52b64d7d7
 
 je <- read_csv("population.csv")
 

@@ -7,8 +7,18 @@ output: word_document
      
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 999)
+
 ```
      
+### load library
+     
+```{r}
+library(tidyverse)
+if(!require(writexl)){install.packages("writexl");library(writexl)}
+```
+     
+
      
 # 계정과목과 Test 목적 및 오류의 정의
      
@@ -41,9 +51,7 @@ Defining the Sampling Unit
      
      
 ```{r include=FALSE}
-library(tidyverse)
-je <- read_csv("https://raw.githubusercontent.com/joy-hhh/R_for_JE_test/main/je_utf.csv")
-sales <- filter(je, ACCTCD == 40401)
+je <- read_csv("population.csv")
 ```
 
 
