@@ -6,7 +6,7 @@ if(!require(writexl)){install.packages("writexl");library(writexl)}
 
 SR = "Yes"         ## "No"
 RC = "Yes"         ## "No"
-PL = "Moderate"    ## "High", "Low", "Analytical.Procedures.Not.Performed"
+PL = "Analytical.Procedures.Not.Performed"     ## "High", "Low", "Moderate"
 
 ## 수행중요성 금액 및 허용오류율(5% 등) 입력
 
