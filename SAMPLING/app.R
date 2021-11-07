@@ -54,7 +54,6 @@ server <- function(input, output, session) {
     
     output$tbl <- renderTable({
         req(input$selFile)
-        input$selFile
         read_excel(input$selFile$datapath)
         
     })
