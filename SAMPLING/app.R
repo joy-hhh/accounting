@@ -1,49 +1,76 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(readxl)
+library(writexl)
+library(dplyr)
 
-# Define UI for application that draws a histogram
+
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
+    titlePanel("Sampling Tool"),
+            fileInput("selFile",
+                      "파일선택",
+                      buttonLabel = "파일선택"),
+            tableOutput("tbl"),
+            
+            
+            numericInput("PM",
+                         "Tolerable misstatement",
+                         700000000,
+                         min = 1,
+                         max = Inf
+                         ),
+            selectInput("SR",
+                        "Significant Risk",
+                        choices = c("Yes", "No")
+                        ),
+            selectInput("RC",
+                        "Reliance.on.Controls",
+                        choices = c("Yes", "No")
+                        ),
+            selectInput("PL",
+                        "Planned Level of Assurance from Substantive Analytical Procedures",
+                        choices = c("Not.Performed", "Low", "Moderate","High" )
+                        ),
+            sliderInput("EM",
+                        "Expected misstatement",
+                        min = 0,
+                        max = 0.1,
+                        value = 0.05,
+                        step = 0.01
+                        ),
+            radioButtons("method",
+                         "MUS or Random",
+                         c("MUS" = "MUS", "Random" = "Random")
+            ),
+            
+            
+            downloadLink("downloadData", "Download")
+                        
+               
+       
 )
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+options (shiny.maxRequestSize = 30 * 1024 ^ 2)
+server <- function(input, output, session) {
+    
+    output$tbl <- renderTable({
+        req(input$selFile)
+        input$selFile
+        read_excel(input$selFile$datapath)
+        
     })
+    
+
+    output$downloadData <- downloadHandler(
+        filename = function() {
+            paste0("sample-",Sys.Date(),".xlsx")    
+        },
+        content = function(file){
+            write_xlsx(data, file)
+        }
+    )
+
 }
 
-# Run the application 
+
+
 shinyApp(ui = ui, server = server)
