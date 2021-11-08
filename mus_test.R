@@ -1,5 +1,7 @@
 options(scipen = 999)
 library(dplyr)
+library(tidyr)
+library(readxl)
 if(!require(writexl)){install.packages("writexl");library(writexl)}
 
 ## 변수 입력 - Significant.Risk, Reliance.on.Controls, Planned Level of Assurance from Substantive Analytical Procedures
@@ -10,11 +12,11 @@ PL = "Analytical.Procedures.Not.Performed"     ## "High", "Low", "Moderate"
 
 ## 수행중요성 금액 및 허용오류율(5% 등) 입력
 
-PM <- 740000000 * 0.8   ## Tolerable misstatement (generally performance materiality)
+PM <- 700000000     ## Tolerable misstatement (generally performance materiality)
 EA <- PM * 0.05    ## Expected misstatement
 
 
-je <- read_csv("population.csv")
+pop <- read_excel("popul.xlsx")
 
 ## rename Data variable
 pop <- pop %>% rename(amount = CR)   # CR 자리에 현재 data 변수명 입력
