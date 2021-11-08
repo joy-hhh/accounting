@@ -13,26 +13,16 @@ ui <- fluidPage(
     
     
     
-    
-    tableOutput("tbl"),
+    textOutput("tbl")
     
 )
 
 options (shiny.maxRequestSize = 30 * 1024 ^ 2)
 server <- function(input, output, session) {
     
-    observe(
+    sampling <- observe(input$PM)
     
-    PM <- as.integer(input$PM)
-    )
-    
-    test <- \(){
-        sampling <<- PM
-    }
-    
-    test()
-    
-    output$tbl <- renderTable({
+    output$tbl <- renderText({
         req(sampling)
         sampling
     })    
