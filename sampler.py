@@ -57,6 +57,7 @@ def rand():
         if amount != 'amount':
             pop = pop.rename(columns = {amount : 'amount'})   
         
+        pop['amount'] = pd.to_numeric(pop['amount'])
         total_line = len(pop)
 
         assurance_factor_raw = pd.DataFrame({"SignificantRisk" : ["Yes", "No", "Yes", "No"],
@@ -68,13 +69,13 @@ def rand():
         assurance_factor = pd.melt(assurance_factor_raw, id_vars = ["SignificantRisk", "RelianceonControls"], 
                                 var_name = "Planned_Level", 
                                 value_name = "Assurance_Factor")
-        factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == SR]
-        factor_filter = factor_filter[factor_filter['RelianceonControls'] == RC]
-        factor_filter = factor_filter[factor_filter['Planned_Level'] == PL]
+        factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == str(combobox1.get())]
+        factor_filter = factor_filter[factor_filter['RelianceonControls'] == str(combobox2.get())]
+        factor_filter = factor_filter[factor_filter['Planned_Level'] == str(combobox3.get())]
         AF = factor_filter["Assurance_Factor"].values[0]
 
         pop_amount = sum(pop['amount'])
-        sample_size = int(pop_amount * AF / (PM - EA))
+        sample_size = int(pop_amount * AF / (int(entry_PM.get())  - int(entry_PM.get()) * float(e.get())))
 
         sampling_row = random.sample(range(total_line), sample_size)
         sampling = pop.loc[sampling_row]
@@ -107,20 +108,20 @@ def mus():
         assurance_factor = pd.melt(assurance_factor_raw, id_vars = ["SignificantRisk", "RelianceonControls"], 
                                 var_name = "Planned_Level", 
                                 value_name = "Assurance_Factor")
-        factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == SR]
-        factor_filter = factor_filter[factor_filter['RelianceonControls'] == RC]
-        factor_filter = factor_filter[factor_filter['Planned_Level'] == PL]
+        factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == str(combobox1.get())]
+        factor_filter = factor_filter[factor_filter['RelianceonControls'] == str(combobox2.get())]
+        factor_filter = factor_filter[factor_filter['Planned_Level'] == str(combobox3.get())]
         AF = factor_filter["Assurance_Factor"].values[0]
 
 
-        high = pop[pop['amount'] > PM]
+        high = pop[pop['amount'] > int(entry_PM.get()) ]
         sum_High_value_items = sum(high['amount'])
         high_index = list(high.index)
         pop_remain = pop.drop(high_index)
 
-        sampling_interval = np.int64((PM - EA) / AF)
+        sampling_interval = np.int64((int(entry_PM.get())  - int(entry_PM.get()) * float(e.get())) / AF)
         pop_amount = sum(np.int64(pop_remain['amount']))
-        sample_size = int(np.int64((pop_amount - sum_High_value_items) * AF) / (PM - EA))
+        sample_size = int(np.int64((pop_amount - sum_High_value_items) * AF) / (int(entry_PM.get())  - int(entry_PM.get()) * float(e.get())))
         sampling_array = np.array(list(range(1, sample_size + 1)), dtype='int64')
         sampling_n = sampling_array * sampling_interval
         sampling_row = list(range(sample_size))
@@ -214,16 +215,6 @@ lbl10.grid(row=10, column=1, sticky = W,  pady = 20)
 
 lbl11 = Label(win, text ="Sampling output size")
 lbl11.grid(row=12, column=1, sticky = W,  pady = 20)
-
-
-
-######################################### input
-SR = str(combobox1.get())
-RC = str(combobox2.get())
-PL = str(combobox3.get())
-
-PM = int(entry_PM.get())     ## Tolerable misstatement (generally performance materiality)
-EA = PM * float(e.get())        ## Expected misstatement
 
 
 
