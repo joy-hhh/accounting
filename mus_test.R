@@ -84,6 +84,7 @@ mus_sampling <- \(SR, RC, PL, PM, EA){
     
 
 
+
 ## 함수 실행
   
 mus_sampling(SR, RC, PL, PM, EA)
