@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import random
+import xlsxwriter
 
 import os
 import tkinter.ttk as ttk
@@ -36,7 +37,86 @@ def readexcel():
 ##################################################################################### save
 def save_File():
     try:
+        Test = [' ',
+                'Test of Details - [BP70 Section A-B]',
+                ' ',
+                ' ',
+                '회사명',
+                '작성일자',
+                '작성자',
+                '검토자',
+                ' ',
+                ' ',
+                ' ',
+                'Section A: 목적 ',
+                ' ',
+                '표본감사를 사용할 때 감사인의 목적은 추출된 표본이 모집단에 대해 결론을 도출하는 데 합리적인 근거를 제공하는 것이다. ',
+                '표본감사란 계정잔액이나 특정 거래 유형의 특성을 평가하기 위한 목적으로, 전체항목(100％)보다 적은 수의 항목에 대해서 감사절차를 적용하는 것이다.',
+                '표본항목들은 표본이 모집단을 대표하는 방식으로 추출되어야 한다. 그러므로 모집단의 모든 항목들은 추출될 기회를 가져야 한다. ',
+                '감사인은 감사표본을 설계할 때 감사절차의 목적과 표본을 도출할 모집단의 특성을 고려하여야 한다. ',
+                '감사인은 감사표본을 설계할 때 달성할 특정 목적과 그러한 목적을 가장 잘 달성할 수 있는 감사절차의 조합을 고려해야 한다. ',
+                '감사인은 추출한 모집단의 표본이 감사 목적에 적절한 것인지 결정해야 한다.',
+                ' ',
+                ' ',
+                '(1) 계정명(FSLI)  :               ',
+                '(2) 기준일 (Coverage date)  :                ',
+                '(3) 테스트되는 경영자의 주장 (Assertion)  :    정확성 (A), 실재성 및 발생사실(E/O)',
+                ' ',
+                ' ',
+                ' ',
+                'Section B: 표본 설계 - 모집단과 표본',
+                ' ',
+                '(1) 모집단의 성격: ',
+                '(2) 모집단의 완전성 확인  : ',
+                '(3) 표본단위의 정의  : ',
+                '(4) 전체 모집단이 추출 대상인가?  : ',
+                ' ',
+                ' ',
+                '표본 지표',
+                ' ',
+                '모집단 크기 : ' + str(sum(pop['amount'])),
+                '예상오류 : ' + str(int(entry_PM.get()) * float(e.get())),
+                '표본대상 항목들의 위험평가 : ' + str(combobox1.get()),
+                '통제에 의존하는 경우 : ' + str(combobox2.get()),
+                '실증적 분석적 검토 절차를 통해 기대수준의 확신을 얻었는가? : ' + str(combobox3.get()),
+                ' ',
+                '추출 방법 (MUS or Random): ',
+                ' ',
+                ' ',
+                ' ',
+                '[Assurance factor]                                Planned Level of Assurance from Substantive Analytical Procedures',
+                "SignificantRisk    RelianceonControls        High   Moderate   Low   APNP ",
+                "Yes                     No                             1.1        1.6          2.8         3",
+                "No                      No                             0          0.5          1.7         1,9",   
+                "Yes                     Yes                            0          0.2          1.4         1.6",
+                "No                      Yes                            0          0            0.3         0.5",
+                ' ',  
+                ' ',
+                '표본크기 결정',
+                ' ',
+                '신뢰계수 (Assurance factor) : ' + str(AF), 
+                '추출된 표본의 갯수 : ' + str(len(sampling)),
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                'Test에 대한 추가 기술 >> ']
+        
         file_path = filedialog.askdirectory()
+        
+        excel_file = file_path + '/test_summary.xlsx'
+        workbook = xlsxwriter.Workbook(excel_file)
+        worksheet = workbook.add_worksheet('ToD')
+        for row_num, value in enumerate(Test):
+            worksheet.write(row_num, 1, value)
+        cell_format1 = workbook.add_format()
+        cell_format1.set_bottom(5)
+        for i in range(5, 9):
+            worksheet.write(f'C{i}', " ", cell_format1)
+        for i in [22, 23, 30, 31, 32, 33, 44, 64]:
+            worksheet.write(f'C{i}', " ", cell_format1)
+        worksheet.set_column(1, 2, 40)
+        workbook.close()
 
         excel_writer = pd.ExcelWriter(file_path + '/test_sample.xlsx', engine='xlsxwriter')
         sampling.to_excel(excel_writer, sheet_name='test_sample')
@@ -51,6 +131,7 @@ def save_File():
 def rand():
     global pop
     global sampling
+    global AF
     try:
         amount = str(combobox11.get())
         ## rename Data variable
@@ -91,6 +172,7 @@ def rand():
 def mus():
     global pop
     global sampling
+    global AF
     try:
         amount = str(combobox11.get())
         ## rename Data variable
