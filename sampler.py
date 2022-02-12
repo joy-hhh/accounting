@@ -52,6 +52,11 @@ def rand():
     global pop
     global sampling
     try:
+        amount = str(combobox11.get())
+        ## rename Data variable
+        if amount != 'amount':
+            pop = pop.rename(columns = {amount : 'amount'})   
+        
         total_line = len(pop)
 
         assurance_factor_raw = pd.DataFrame({"SignificantRisk" : ["Yes", "No", "Yes", "No"],
