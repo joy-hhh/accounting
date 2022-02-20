@@ -119,6 +119,12 @@ ui <- fluidPage(
 
     # Application title
     titlePanel("표준감사시간 계산기 - 2022년 1월 개정 반영"),
+    h5('joyhhh@outlook.kr'),
+    h5('조이회계 | https://joy-accounting.netlify.com/'),
+    h5('Thanks to 테크핀투자자문'),
+    imageOutput('img1'),
+    
+    
     HTML('<hr style="border-color: black;">'),
     
     fluidRow(
@@ -260,7 +266,12 @@ ui <- fluidPage(
 
 # Define server logic
 server <- function(input, output, session) {
-
+    
+    output$img1 = renderImage({
+        list(src = "techfin.png")
+    }, deleteFile = FALSE)
+    
+    
     group <- function(num1, num2, sel_listed, sel_konex, num5, num6){
         scale <- (num1 + num2) / 2
         scale2 <- (num5 + num6) / 2
