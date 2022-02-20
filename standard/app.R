@@ -268,7 +268,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
     
     output$img1 = renderImage({
-        list(src = "techfin.png")
+        list(src = "techfin.jpg")
     }, deleteFile = FALSE)
     
     
