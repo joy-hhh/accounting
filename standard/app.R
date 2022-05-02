@@ -278,7 +278,7 @@ server <- function(input, output, session) {
     }, deleteFile = FALSE)
     
     group <- function(num1, num2, sel_listed, sel_konex, num5, num6){
-        scale <- (num1 + num2) / 2
+        scale <- num1
         scale2 <- (num5 + num6) / 2
         if(scale >= 2000000000000 & scale2 >= 5000000000000){
             1
