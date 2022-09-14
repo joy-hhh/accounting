@@ -73,7 +73,7 @@ def save_File():
                 '---------------------------------------------------------------------------------------------------------------------------- ',
                 '모집단 크기 : ' + str(format(sum(pop['amount']), ',d')),
                 '예상오류 : ' + str(float(entry_PM.get()) * float(e.get())),
-                '표본대상 항목들의 위험평가 : ' + str(combobox1.get()),
+                '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(combobox1.get()),
                 '통제에 의존하는 경우 : ' + str(combobox2.get()),
                 '실증적 분석적 검토 절차를 통해 기대수준의 확신을 얻었는가? : ' + str(combobox3.get()),
                 '---------------------------------------------------------------------------------------------------------------------------- ',
@@ -146,7 +146,7 @@ def save_File():
 
 
         excel_writer = pd.ExcelWriter(file_path + '/test_sample.xlsx', engine='xlsxwriter')
-        sampling.to_excel(excel_writer, sheet_name='test_sample')
+        sampling.to_excel(excel_writer, sheet_name='test_sample',index=False)
         excel_writer.save()
         msgbox.showinfo("Save complete", "test_sample.xlsx, test_summary.xlsx")
     except Exception as err:
@@ -227,10 +227,13 @@ def mus():
         sum_High_value_items = sum(high['amount'])
         high_index = list(high.index)
         pop_remain = pop.drop(high_index)
+        minus = pop[pop['amount'] <= 0]
+        minus_index = list(minus.index)
+        pop_remain = pop_remain.drop(minus_index)
 
         sampling_interval = np.int64((int(entry_PM.get())  - int(entry_PM.get()) * float(e.get())) / AF)
         pop_amount = sum(np.int64(pop_remain['amount']))
-        sample_size = int(np.int64((pop_amount - sum_High_value_items) * AF) / (int(entry_PM.get())  - int(entry_PM.get()) * float(e.get())))
+        sample_size = int(np.int64(pop_amount * AF) / (int(entry_PM.get())  - int(entry_PM.get()) * float(e.get())))
         sampling_array = np.array(list(range(1, sample_size + 1)), dtype='int64')
         sampling_n = sampling_array * sampling_interval
         sampling_row = list(range(sample_size))
@@ -247,8 +250,10 @@ def mus():
         
         ## 샘플링 객체 생성
         pop_remain = pop_remain.drop('cum', axis = 1)
+        pop_remain = pop_remain.reset_index()
         mus_sample = pop_remain.loc[sampling_row]
         sampling = pd.concat([high, mus_sample])
+        
     except Exception as err:
         msgbox.showerror("Error", err)
 
@@ -257,7 +262,8 @@ def mus():
 
 # Title
 
-Label(win, text = "Sampling Tool").grid(row = 0, column = 0, pady =20, columnspan =2)
+label0 = Label(win, text = "Sampling Tool")
+label0.grid(row = 0, column = 0, pady =20, columnspan=2)
 
 label1 = Label(win, text = "Significant Risk")
 label1.grid(row = 1, column = 0, sticky = W, padx =10)
