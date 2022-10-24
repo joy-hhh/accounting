@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
 import random
-import xlsxwriter
 
 pop = pd.read_excel("popul.xlsx", dtype=str)
 
 amount = "금액"
+
 ## rename Data variable
 if amount != 'amount':
     pop = pop.rename(columns = {amount : 'amount'})   
@@ -48,9 +48,6 @@ for i in range(sample_size):
 unique = set(sampling_row)
 sampling_row = list(unique)
 sampling_row.sort()
-
-## 추출된 샘플의 갯수
-len(sampling_row)
 
 
 ## 샘플링 객체 생성

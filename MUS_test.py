@@ -19,7 +19,7 @@ def mus():
     global pop
     global sampling
     
-    amount = "차변금액"
+    amount = "금액"
     ## rename Data variable
     pop = pop.rename(columns = {amount : 'amount'})   
     pop['amount'] = pd.to_numeric(pop['amount'])
@@ -63,7 +63,7 @@ def mus():
     sampling = pd.concat([high, sampling])
 
 
-
+pop
 
 read()
 mus()
@@ -72,6 +72,9 @@ sampling
 
 
 
+
+
+################################################
 amount = "차변금액"
 
 ## rename Data variable
