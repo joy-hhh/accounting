@@ -73,6 +73,7 @@ def save_File():
                 '---------------------------------------------------------------------------------------------------------------------------- ',
                 '모집단 크기 : ' + str(population),
                 '예상오류 : ' + str(float(entry_PM.get()) * float(e.get())),
+                'Tolerable Misstatement : ' + str(float(entry_PM.get())),
                 '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(combobox1.get()),
                 '통제에 의존하는 경우 : ' + str(combobox2.get()),
                 '실증적 분석적 검토 절차를 통해 기대수준의 확신을 얻었는가? : ' + str(combobox3.get()),
