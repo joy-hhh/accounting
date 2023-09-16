@@ -43,7 +43,7 @@ class SampleGenerator:
                     ' ',
                     '* 표본 지표',
                     '---------------------------------------------------------------------------------------------------------------------------- ',
-                    '모집단 크기 : ' + str(format(sum(pop[amount]), ',d')),
+                    '모집단 크기 : ' + str(sum(pop[amount])),
                     '예상오류 : ' + str(float(tm) * float(emr)),
                     'Tolerable Misstatement : ' + str(float(tm)),
                     '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(significant_risk),
@@ -128,7 +128,8 @@ class SampleGenerator:
         try:
             if amount != 'amount':
                 pop = pop.rename(columns = {amount : 'amount'}) 
-                
+            
+            pop = pop.dropna(subset=['amount'], how='any', axis=0) 
             pop['amount'] = pd.to_numeric(pop['amount'])
 
             assurance_factor_raw = pd.DataFrame({"SignificantRisk" : ["Yes", "No", "Yes", "No"],
