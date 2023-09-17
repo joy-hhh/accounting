@@ -15,10 +15,10 @@ sap = "APNP"  # 이 값을 설정하세요  ["High", "Moderate", "Low", "APNP"]
 file_path = "/home/joy/py"
 amount = "금액"
 
-sample_generator = rsmmus.SampleGenerator()
-pop_data = pd.read_excel("/home/joy/Downloads/popul_na.xlsx")  # 팝 데이터를 여기에 입력하세요
+sample_generator = rsmmus.SampleGenerator(significant_risk, reliance_on_controls, tm, emr, sap)
+pop_data = pd.read_excel("/home/joy/py/accounting/popul.xlsx")  # 팝 데이터를 여기에 입력하세요
 
 
-sampling_result = sample_generator.mus(pop_data, amount ,significant_risk, reliance_on_controls, tm, emr, sap)
-sample_generator.save_file(pop_data, sampling_result, amount, file_path, significant_risk, reliance_on_controls, tm, emr, sap)
+sampling_result = sample_generator.mus(pop_data, amount) 
+sample_generator.save_file(pop_data, sampling_result, amount, file_path)
 

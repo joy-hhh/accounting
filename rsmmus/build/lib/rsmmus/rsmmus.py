@@ -3,11 +3,16 @@ import numpy as np
 import xlsxwriter
 
 class SampleGenerator:
-    def __init__(self):
+    def __init__(self, sr, roc, tm, emr, sap):
         self.AF = None
         self.sampling = None
-        
-    def save_file(self, pop, sampling_result, amount, file_path, significant_risk, reliance_on_controls, tm, emr, sap):
+        self.significant_risk = sr
+        self.reliance_on_controls = roc
+        self.tm = tm
+        self.emr = emr
+        self.sap = sap
+
+    def save_file(self, pop, sampling_result, amount, file_path):
         try:
             Test = [' ',
                     'Test of Details - [BP70 Section A-B]',
@@ -44,11 +49,11 @@ class SampleGenerator:
                     '* 표본 지표',
                     '---------------------------------------------------------------------------------------------------------------------------- ',
                     '모집단 크기 : ' + str(sum(pop[amount])),
-                    '예상오류 : ' + str(float(tm) * float(emr)),
-                    'Tolerable Misstatement : ' + str(float(tm)),
-                    '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(significant_risk),
-                    '통제에 의존하는 경우 : ' + str(reliance_on_controls),
-                    '실증적 분석적 검토 절차를 통해 기대수준의 확신을 얻었는가? : ' + str(sap),
+                    '예상오류 : ' + str(float(self.tm) * float(self.tm)),
+                    'Tolerable Misstatement : ' + str(float(self.tm)),
+                    '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(self.significant_risk),
+                    '통제에 의존하는 경우 : ' + str(self.reliance_on_controls),
+                    '실증적 분석적 검토 절차를 통해 기대수준의 확신을 얻었는가? : ' + str(self.sap),
                     '---------------------------------------------------------------------------------------------------------------------------- ',
                     ' ',
                     ' ',
@@ -67,7 +72,7 @@ class SampleGenerator:
                     ' ',
                     '* 표본크기 결정',
                     '---------------------------------------------------------------------------------------------------------------------------- ',
-                    '신뢰계수 (Assurance factor) : ' + str(AF),
+                    '신뢰계수 (Assurance factor) : ' + str(self.AF),
                     '추출된 표본의 갯수 : '  + str(len(sampling_result)),
                     '---------------------------------------------------------------------------------------------------------------------------- ',
                     ' ',
@@ -123,8 +128,7 @@ class SampleGenerator:
         except Exception as err:
             print("Error", err)
 
-    def mus(self, pop, amount, significant_risk, reliance_on_controls, tm, emr, sap):
-        global AF
+    def mus(self, pop, amount):
         try:
             if amount != 'amount':
                 pop = pop.rename(columns = {amount : 'amount'}) 
@@ -141,13 +145,13 @@ class SampleGenerator:
             assurance_factor = pd.melt(assurance_factor_raw, id_vars = ["SignificantRisk", "RelianceonControls"],
                                     var_name = "Planned_Level",
                                     value_name = "Assurance_Factor")
-            factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == significant_risk]
-            factor_filter = factor_filter[factor_filter['RelianceonControls'] == reliance_on_controls]
-            factor_filter = factor_filter[factor_filter['Planned_Level'] == sap]
-            AF = factor_filter["Assurance_Factor"].values[0]
-            print(f"Assurance Factor는 {AF} 입니다.")
+            factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == self.significant_risk]
+            factor_filter = factor_filter[factor_filter['RelianceonControls'] == self.reliance_on_controls]
+            factor_filter = factor_filter[factor_filter['Planned_Level'] == self.sap]
+            self.AF = factor_filter["Assurance_Factor"].values[0]
+            print(f"Assurance Factor는 {self.AF} 입니다.")
 
-            high = pop[pop['amount'] > int(tm) ]
+            high = pop[pop['amount'] > int(self.tm) ]
             sum_High_value_items = sum(high['amount'])
             high_index = list(high.index)
             pop_remain = pop.drop(high_index)
@@ -155,11 +159,11 @@ class SampleGenerator:
             minus_index = list(minus.index)
             pop_remain = pop_remain.drop(minus_index)
 
-            sampling_interval = np.int64((int(tm)  - int(tm) * float(emr)) / AF)
+            sampling_interval = np.int64((int(self.tm)  - int(self.tm) * float(self.emr)) / self.AF)
             print(f"Sampling Interval은 {sampling_interval} 입니다.")
 
             pop_amount = sum(np.int64(pop_remain['amount']))
-            sample_size = int(np.int64(pop_amount * AF) / (int(tm)  - int(tm) * float(emr)))
+            sample_size = int(np.int64(pop_amount * self.AF) / (int(self.tm)  - int(self.tm) * float(self.emr)))
             sampling_array = np.array(list(range(1, sample_size + 1)), dtype='int64')
             sampling_n = sampling_array * sampling_interval
             sampling_row = list(range(sample_size))

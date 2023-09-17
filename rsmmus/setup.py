@@ -5,7 +5,7 @@ with open("README", "r") as fh:
 
 setuptools.setup(
     name="rsmmus",
-    version="0.0.4",
+    version="0.0.5",
     author="Joy",
     author_email="joyhhh@outlook.kr",
     description="RSM MUS Sampling Tool",
@@ -24,6 +24,6 @@ setuptools.setup(
 		"xlsxwriter",
 		"openpyxl",
 	],
-python_requires='>=3.9',
+python_requires='>=3.8',
 )
 
