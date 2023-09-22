@@ -3,14 +3,74 @@ import numpy as np
 import xlsxwriter
 
 class SampleGenerator:
-    def __init__(self, sr, roc, tm, emr, sap):
+    def __init__(self):
         self.AF = None
         self.sampling = None
-        self.significant_risk = sr
-        self.reliance_on_controls = roc
-        self.tm = tm
-        self.emr = emr
-        self.sap = sap
+        
+        self.yesno = ("Y","y","N","n")
+        self.ar = ("APNP", "Low", "Moderate", "High")
+
+        ### Significant Risk
+        while True:
+            self.significant_risk = str(input("Significant Risk? (Y/N): "))
+            if self.significant_risk not in self.yesno:
+                print("Y 또는 N으로 입력해야 합니다.")
+            else:
+                print(f"Significant Risk는 {self.significant_risk} 으로 입력되었습니다.")
+                break
+            
+            
+        ### Reliance on Controls
+        while True:
+            self.reliance_on_controls = str(input("Reliance on Controls? (Y/N): "))
+            if self.reliance_on_controls not in self.yesno:
+                print("Y 또는 N으로 입력해야 합니다.")
+            else:
+                print(f"Reliance on Controls는 {self.reliance_on_controls} 으로 입력되었습니다.")
+                break
+            
+            
+        ### Tolerable Misstatement
+        while True:
+            try:
+                self.tm = int(input("Tolerable Misstatement? (숫자로 입력): "))
+                print(f"Tolerable Misstatement는 {self.tm}입니다.")
+                break
+            except ValueError:
+                print("입력값이 숫자가 아닙니다.")
+
+
+        ### Expected Misstatement Rate
+        self.emr = 0.05
+        print(f"Expected Misstatement Rate는 {self.emr}입니다.")
+
+
+        ### Substantive Analytical Procedures
+        while True:
+            try:
+                self.sap_index = int(input("Substantive Analytical Procedures? [(1)APNP, (2)Low, (3)Moderate, (4)High] => 1,2,3,4 중 하나의 숫자로 입력 : "))
+                if self.sap_index < 1 or self.sap_index > 4:
+                    print("1,2,3,4 중 하나의 숫자로 입력해야 합니다.")
+                else:
+                    self.sap = self.ar[self.sap_index-1]
+                    print(f"Substantive Analytical Procedures는 {self.sap} 으로 입력되었습니다.")
+                    break
+            except ValueError:
+                print("입력값이 숫자가 아닙니다.")
+
+        self.risk = "Yes" if self.significant_risk == "Y" or self.significant_risk == "y" else "No"
+        self.roc = "Yes" if self.reliance_on_controls == "Y" or self.reliance_on_controls == "y" else "No"
+
+        print("=============================================")
+        print("Parameters")
+        print("=============================================")
+        print(f"Significant Risk : {self.risk}")
+        print(f"Reliance on Controls? : {self.roc }")
+        print(f"Tolerable Misstatement : {self.tm}")
+        print(f"Expected Misstatement Rate : {self.emr*100}% ")
+        print(f"Substantive Analytical Procedures : {self.sap}")
+        print("=============================================")
+
 
     def save_file(self, pop, sampling_result, amount, file_path):
         try:
@@ -51,8 +111,8 @@ class SampleGenerator:
                     '모집단 크기 : ' + str(sum(pop[amount])),
                     '예상오류 : ' + str(float(self.tm) * float(self.tm)),
                     'Tolerable Misstatement : ' + str(float(self.tm)),
-                    '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(self.significant_risk),
-                    '통제에 의존하는 경우 : ' + str(self.reliance_on_controls),
+                    '표본대상 항목들의 위험평가 결과 SignificantRisk? : ' + str(self.risk),
+                    '통제에 의존하는 경우 : ' + str(self.roc),
                     '실증적 분석적 검토 절차를 통해 기대수준의 확신을 얻었는가? : ' + str(self.sap),
                     '---------------------------------------------------------------------------------------------------------------------------- ',
                     ' ',
@@ -145,8 +205,8 @@ class SampleGenerator:
             assurance_factor = pd.melt(assurance_factor_raw, id_vars = ["SignificantRisk", "RelianceonControls"],
                                     var_name = "Planned_Level",
                                     value_name = "Assurance_Factor")
-            factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == self.significant_risk]
-            factor_filter = factor_filter[factor_filter['RelianceonControls'] == self.reliance_on_controls]
+            factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == self.risk]
+            factor_filter = factor_filter[factor_filter['RelianceonControls'] == self.roc]
             factor_filter = factor_filter[factor_filter['Planned_Level'] == self.sap]
             self.AF = factor_filter["Assurance_Factor"].values[0]
             print(f"Assurance Factor는 {self.AF} 입니다.")
@@ -183,7 +243,7 @@ class SampleGenerator:
             pop_remain = pop_remain.reset_index()
             mus_sample = pop_remain.loc[sampling_row]
             self.sampling = pd.concat([high, mus_sample])
-
+            self.sampling = self.sampling.rename(columns = {'amount': amount}) 
 
             return self.sampling
 
