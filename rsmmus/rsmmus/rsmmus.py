@@ -4,7 +4,7 @@ import xlsxwriter
 
 class SampleGenerator:
     def __init__(self):
-        self.AF = None
+
         self.sampling = None
         
         self.yesno = ("Y","y","N","n")
@@ -12,21 +12,23 @@ class SampleGenerator:
 
         ### Significant Risk
         while True:
-            self.significant_risk = str(input("Significant Risk? (Y/N): "))
-            if self.significant_risk not in self.yesno:
+            self.risk = str(input("Significant Risk? (Y/N): "))
+            if self.risk not in self.yesno:
                 print("Y 또는 N으로 입력해야 합니다.")
             else:
-                print(f"Significant Risk는 {self.significant_risk} 으로 입력되었습니다.")
+                self.risk = "Yes" if self.risk == "Y" or self.risk == "y" else "No"
+                print(f"Significant Risk는 {self.risk} 으로 입력되었습니다.")
                 break
             
             
         ### Reliance on Controls
         while True:
-            self.reliance_on_controls = str(input("Reliance on Controls? (Y/N): "))
-            if self.reliance_on_controls not in self.yesno:
+            self.roc = str(input("Reliance on Controls? (Y/N): "))
+            if self.roc not in self.yesno:
                 print("Y 또는 N으로 입력해야 합니다.")
             else:
-                print(f"Reliance on Controls는 {self.reliance_on_controls} 으로 입력되었습니다.")
+                self.roc = "Yes" if self.roc == "Y" or self.roc == "y" else "No"
+                print(f"Reliance on Controls는 {self.roc} 으로 입력되었습니다.")
                 break
             
             
@@ -58,9 +60,24 @@ class SampleGenerator:
             except ValueError:
                 print("입력값이 숫자가 아닙니다.")
 
-        self.risk = "Yes" if self.significant_risk == "Y" or self.significant_risk == "y" else "No"
-        self.roc = "Yes" if self.reliance_on_controls == "Y" or self.reliance_on_controls == "y" else "No"
+        assurance_factor_raw = pd.DataFrame({"SignificantRisk" : ["Yes", "No", "Yes", "No"],
+                                        "RelianceonControls" : ["No","No","Yes","Yes"],
+                                        "High" : [1.1, 0 ,0 ,0],
+                                        "Moderate" : [1.6,0.5,0.2,0],
+                                        "Low" : [2.8,1.7,1.4,0.3],
+                                        "APNP" : [3,1.9,1.6,0.5]})
+        assurance_factor = pd.melt(assurance_factor_raw, id_vars = ["SignificantRisk", "RelianceonControls"],
+                                var_name = "Planned_Level",
+                                value_name = "Assurance_Factor")
+        factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == self.risk]
+        factor_filter = factor_filter[factor_filter['RelianceonControls'] == self.roc]
+        factor_filter = factor_filter[factor_filter['Planned_Level'] == self.sap]
+        self.AF = factor_filter["Assurance_Factor"].values[0]
 
+
+        print()
+        print(f"Assurance Factor는 {self.AF} 입니다.")
+        print()
         print("=============================================")
         print("Parameters")
         print("=============================================")
@@ -196,21 +213,7 @@ class SampleGenerator:
             pop = pop.dropna(subset=['amount'], how='any', axis=0) 
             pop['amount'] = pd.to_numeric(pop['amount'])
 
-            assurance_factor_raw = pd.DataFrame({"SignificantRisk" : ["Yes", "No", "Yes", "No"],
-                                        "RelianceonControls" : ["No","No","Yes","Yes"],
-                                        "High" : [1.1, 0 ,0 ,0],
-                                        "Moderate" : [1.6,0.5,0.2,0],
-                                        "Low" : [2.8,1.7,1.4,0.3],
-                                        "APNP" : [3,1.9,1.6,0.5]})
-            assurance_factor = pd.melt(assurance_factor_raw, id_vars = ["SignificantRisk", "RelianceonControls"],
-                                    var_name = "Planned_Level",
-                                    value_name = "Assurance_Factor")
-            factor_filter = assurance_factor[assurance_factor['SignificantRisk'] == self.risk]
-            factor_filter = factor_filter[factor_filter['RelianceonControls'] == self.roc]
-            factor_filter = factor_filter[factor_filter['Planned_Level'] == self.sap]
-            self.AF = factor_filter["Assurance_Factor"].values[0]
-            print(f"Assurance Factor는 {self.AF} 입니다.")
-
+            
             high = pop[pop['amount'] > int(self.tm) ]
             sum_High_value_items = sum(high['amount'])
             high_index = list(high.index)
@@ -249,4 +252,3 @@ class SampleGenerator:
 
         except Exception as err:
             print("Error", err)
-
