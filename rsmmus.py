@@ -210,7 +210,12 @@ class SampleGenerator:
             if amount != 'amount':
                 pop = pop.rename(columns = {amount : 'amount'}) 
             
-            pop = pop.dropna(subset=['amount'], how='any', axis=0) 
+            if pop['amount'].isna().sum() > 0:
+                print("금액 열에 "+str(pop['amount'].isna().sum())+"개의 결측값이 있습니다.")
+                pop = pop.dropna(subset=['amount'], how='any', axis=0)
+                print("결측값이 포함된 행이 제거되었습니다.")
+
+            
             pop['amount'] = pd.to_numeric(pop['amount'])
 
             
