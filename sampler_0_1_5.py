@@ -11,7 +11,7 @@ import tkinter.messagebox as msgbox
 
 win =Tk()
 win.geometry("700x500")
-win.title("Sampler 0.1.4")
+win.title("Sampler 0.1.5")
 win.option_add("*Font","NanumGothic 16")
 
 
